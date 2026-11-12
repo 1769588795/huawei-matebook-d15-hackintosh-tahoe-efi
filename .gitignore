@@ -1,0 +1,37 @@
+# macOS 垃圾
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# 备份与日志
+efi-backup-*/
+*.bak
+*.log
+logs/
+
+# 旧版配置备份：可能含真实序列号 / MLB / UUID / 网卡 MAC，绝对不要提交
+*.old
+*.old[0-9]*
+EFI/OC/config.plist.*
+导出EFI-日志.txt
+*-日志.txt
+
+# 打包产物
+*.zip
+*.tar.gz
+
+# Apple 固件与版权文件：绝对不要提交
+EFI/OC/Apple/
+EFI/APPLE/
+
+# OpenCore 运行时产物
+EFI/OC/Logs/
+EFI/OC/.contentFlush
+EFI/OC/.metadata_never_index
+EFI/OC/.metadata_never_index_unless_rootfs
+
+# 编辑器
+.vscode/
+.idea/

@@ -10,7 +10,7 @@
 否则会被人冒用 Apple ID 身份（iMessage / FaceTime / 查找）。
 
 ```bash
-cd hackintosh-opencore-i5-10210u
+cd huawei-matebook-d15-hackintosh-tahoe-efi
 
 # ① 应该能看到占位符
 grep -c "REPLACE_WITH_GENSMBIOS" EFI/OC/config.plist
@@ -40,12 +40,12 @@ find . \( -name "*.old*" -o -name "config.plist.*" \) -type f
 ## 1. 建本地仓库并提交
 
 ```bash
-cd hackintosh-opencore-i5-10210u
+cd huawei-matebook-d15-hackintosh-tahoe-efi
 
 git init
 git add .
 git status                 # 扫一眼，别把 zip / 日志 / Apple 目录带进去
-git commit -m "Initial commit: OpenCore EFI for i5-10210U Hackintosh (macOS 26 Tahoe)"
+git commit -m "Initial commit: HUAWEI MateBook D 15 hackintosh OpenCore EFI for macOS Tahoe"
 ```
 
 建议先把默认分支改成 `main`：
@@ -60,21 +60,24 @@ git branch -M main
 
 | 字段 | 建议值 |
 | --- | --- |
-| Repository name | `hackintosh-opencore-i5-10210u` |
-| Description | `OpenCore EFI & fixes for Intel i5-10210U laptop running macOS 26 Tahoe` |
+| Repository name | `huawei-matebook-d15-hackintosh-tahoe-efi` |
+| Description | `OpenCore EFI for HUAWEI MateBook D 15 (2020) Hackintosh running macOS 26 Tahoe - i5-10210U, Comet Lake, ACPI, kexts and fix scripts` |
 | Visibility | Public |
 | Initialize with README / .gitignore / license | **全部不勾**（本地已有，勾了会冲突） |
+
+> 仓库名刻意包含 `huawei` `matebook` `d15` `hackintosh` `tahoe` `efi` 这几个词，
+> GitHub 搜索主要匹配仓库名、描述、topics 和 README，这样别人搜这些关键词更容易找到。
 
 建好后 GitHub 会给一段命令，用 `push an existing repository` 那一组：
 
 ```bash
-git remote add origin https://github.com/<你的用户名>/hackintosh-opencore-i5-10210u.git
+git remote add origin https://github.com/<你的用户名>/huawei-matebook-d15-hackintosh-tahoe-efi.git
 git push -u origin main
 ```
 
 ## 3. 仓库设置（可选项，但建议做）
 
-- **Topics**（右上 About 齿轮）：`hackintosh` `opencore` `macos` `tahoe` `comet-lake` `intel-wifi` `efi`
+- **Topics**（右上 About 齿轮）：`hackintosh` `opencore` `opencore-efi` `efi` `macos` `macos-tahoe` `tahoe` `huawei` `matebook` `matebook-d15` `comet-lake` `i5-10210u` `intel-wifi`
 - **About → Description**：用上面那句英文
 - **Releases**：如果你之后更新了 EFI，打个 `v1.0` tag 方便别人下载：
 

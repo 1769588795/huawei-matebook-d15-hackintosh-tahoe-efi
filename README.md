@@ -1,7 +1,9 @@
-# Hackintosh · i5-10210U · OpenCore
+# HUAWEI MateBook D 15 (2020) Hackintosh · macOS 26 Tahoe · OpenCore EFI
 
-> 一台 Intel 笔记本的黑苹果（Hackintosh）配置与踩坑记录。
-> macOS 26 (Tahoe) + OpenCore，配置在真机上长期日常使用。
+> 一台 HUAWEI MateBook D 15（2020 款，Intel i5-10210U / Comet Lake-U）的黑苹果（Hackintosh）配置与踩坑记录。
+> macOS 26 Tahoe + OpenCore EFI，已在真机长期日常使用；含 SSDT、kext、脱敏后的 `config.plist` 与修复脚本。
+>
+> Keywords: Huawei MateBook D 15 hackintosh, macOS Tahoe, OpenCore EFI, i5-10210U.
 
 [![macOS](https://img.shields.io/badge/macOS-26.7.2-000000)](#)
 [![OpenCore](https://img.shields.io/badge/OpenCore-EFI-blue)](#)

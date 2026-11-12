@@ -9,15 +9,36 @@
 | 核显 | Intel UHD Graphics 620（`0x9B41`） | `device-id` 注入 + WhateverGreen，QE/CI 正常 |
 | 独显 | 无 / 已屏蔽 | — |
 | 内存 | 16 GB DDR4 | 正常 |
-| 存储 | NVMe SSD 480 GB（APFS 容器 479.9 GB） | 正常 |
-| 无线网卡 | Intel Wireless-AC 9560 | ⚠️ 蓝牙见 [quirks-and-fixes.md](quirks-and-fixes.md)，Wi-Fi 待验证 |
+| 存储 | 兼容的 SATA SSD 或 NVMe SSD（原装 Samsung PM981 / PM981a 已更换） | 正常，见下方「原装 PM981 必须更换」 |
+| 无线网卡 | Intel Wireless-AC 9560 | ✅ 蓝牙已修复（见 [踩坑记录](quirks-and-fixes.md)）；Wi-Fi 待验证 |
 | 声卡 | Realtek 板载（`alcid=21`） | 扬声器 / 耳机自动切换 |
+| 触控板 | 板载 I2C HID 触控板 | ✅ 可用（VoodooI2C + VoodooI2CHID + VoodooInput） |
 | SMBIOS | `MacBookPro16,1`（仿冒） | 与真实硬件不符，仅用于骗过系统检查 |
 
 当前系统：**macOS 26.7.2（25G332）**，产品名 `macintosh`。
 
 > 该机型报告为 `MacBook Pro (16-inch, 2019)`、`System Firmware 2094.80.5.0.0`，
 > 这些都是 SMBIOS 仿冒的结果，**不要**据此判断真实机型。
+
+## 原装 PM981 必须更换
+
+MateBook D 15（2020）原配的 **Samsung PM981 / PM981a（OEM NVMe 固态硬盘）在 macOS 下不受支持**。
+这属于盘本身与 Apple NVMe 驱动的兼容性问题，改 `config.plist`、加 `NVMeFix`、换 SMBIOS 都绕不过去：
+
+- 典型表现：安装器里看不到目标盘，或安装过程卡死 / 反复重启；
+- 即便勉强装上，也容易出现随机 I/O 报错、休眠唤醒失败、长时间使用后掉盘。
+
+**解法只有一个：物理换盘。** 按你这台机器的实际接口二选一：
+
+| 方案 | 说明 |
+| --- | --- |
+| 2.5" SATA SSD | 走 AHCI，macOS 原生支持最好，最省心（需机器有对应硬盘位 / 转接） |
+| M.2 NVMe SSD | 选主控与 macOS 兼容的常见型号，**不要**再用 PM981 / PM981a |
+
+换盘后再安装 macOS、部署本仓库的 EFI。EFI 里保留了 `NVMeFix.kext` 与 `SSDT-NVME.aml`，
+用于改善兼容 NVMe 盘的电源管理与自检；如果换的是 SATA 盘，这两项对 SATA 不生效，可按需禁用。
+
+> 换盘会改变容量与设备路径，下面的分区布局只是当时（480 GB 盘）的记录，请以你自己的 `diskutil list` 为准。
 
 ## BIOS 设置
 

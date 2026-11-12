@@ -33,7 +33,7 @@ find . \( -name "*.old*" -o -name "config.plist.*" \) -type f
 > 整套 SMBIOS 凭据公开，且 Git 历史无法真正抹除。发现备份文件请直接移出仓库，不要用 `git rm` 了事。
 > 本仓库的 `.gitignore` 已加入 `*.old*` 与 `EFI/OC/config.plist.*` 规则作兜底。
 
-硬件清单里标为「未标注」的项（机型、触控板、摄像头等）需要原机主补充，欢迎 PR。
+硬件清单里仍标 ❓ 的项目（摄像头、电池等）欢迎 PR 补充；机型、触控板、蓝牙与硬盘兼容性状态已由原机主确认。
 
 ---
 
@@ -102,8 +102,8 @@ git push origin v1.0
 | 文件 | 说明 |
 | --- | --- |
 | `README.md` | 主文档：硬件表、启动参数解释、三步使用说明、已知问题、致谢 |
-| `docs/hardware.md` | 详细硬件清单 + BIOS 开关清单 + 分区布局 |
-| `docs/quirks-and-fixes.md` | 三个坑的完整排查过程（蓝牙固件 v0 c0、键盘重配对、啰嗦模式） |
+| `docs/hardware.md` | 详细硬件清单 + PM981 换盘说明 + BIOS 开关清单 + 分区布局 |
+| `docs/quirks-and-fixes.md` | 状态速查表 + 踩坑过程（PM981 换盘、蓝牙固件 v0 c0、键盘重配对、啰嗦模式、USB 端口） |
 | `scripts/01~03` | 已在真机验证过的修复脚本，带 `--dry-run` |
 | `scripts/00` | 从本机导出 EFI + 自动脱敏序列号 |
 | `LICENSE` | MIT |

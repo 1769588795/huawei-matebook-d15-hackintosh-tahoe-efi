@@ -3,6 +3,18 @@
 按时间顺序记录这台机器上实际踩过的坑，以及验证有效的解法。
 所有修复脚本都在 [`../scripts/`](../scripts/)，**改动前都会自动备份 `config.plist` 到桌面**。
 
+## 当前状态速查
+
+| 项目 | 状态 | 说明 |
+| --- | --- | --- |
+| 原装 Samsung PM981 / PM981a | ✅ 已换盘 | macOS 不支持，已换成兼容的 SATA / NVMe SSD，见 §1 |
+| Intel 9560 蓝牙 | ✅ 已修复 | `-ibtcompatbeta` + 清控制器缓存，见 §2 |
+| 蓝牙键盘开机自动回连 | ✅ 已修复 | 注入 `BluetoothLocalHostAddress` + `AutoSeek*`，见 §3 |
+| 板载触控板 | ✅ 可用 | `VoodooI2C` + `VoodooI2CHID` + `VoodooInput` 直接驱动，未做额外修补 |
+| 开机啰嗦模式 | ✅ 已关闭 | 见 §4 |
+| Wi-Fi | ❓ 未验证 | `AirportItlwm.kext` 已在 EFI 中启用，实际使用效果未记录 |
+| USB 端口定制 | ⚠️ 遗留问题 | 见 §5 |
+
 ---
 
 ## 0. 两个 EFI 分区：别改错盘
@@ -21,7 +33,27 @@ disk1s1   EFI  EFI       209.7 MB   ← OpenCore 在这里
 
 ---
 
-## 1. Intel 9560 蓝牙起不来（固件 `v0 c0`）
+## 1. 原装 PM981 装不上 macOS（已解决：换盘）
+
+**现象**：用原机自带的 Samsung PM981 / PM981a NVMe 固态硬盘时，macOS 安装阶段就进行不下去 ——
+安装器看不到目标盘，或安装过程中卡死 / 反复重启。
+
+**原因**：PM981 系列是三星 OEM NVMe 盘，其主控与固件和 Apple 的 NVMe 驱动不兼容，
+属于**硬件层面**的问题。改 `config.plist`、加 `NVMeFix.kext`、换 SMBIOS 都解决不了，别在这上面耗时间。
+
+**解法**：物理换盘，二选一：
+
+- **2.5" SATA SSD** —— 走 AHCI，macOS 原生支持最好（前提是机器有对应硬盘位）；
+- **兼容的 M.2 NVMe SSD** —— 选主控与 macOS 兼容的常见型号，避开 PM981 / PM981a。
+
+**结果**：换盘后安装、APFS、休眠唤醒均正常，可长期日常使用。EFI 中的 `NVMeFix.kext` +
+`SSDT-NVME.aml` 保留给 NVMe 盘做电源管理与自检优化；换 SATA 盘时这两项不生效，按需禁用即可。
+
+> 换盘会改变磁盘容量和设备路径，[硬件文档](hardware.md) 里的分区布局只是当时的示例。
+
+---
+
+## 2. Intel 9560 蓝牙起不来（固件 `v0 c0`）· 已修复
 
 **现象**
 
@@ -44,14 +76,14 @@ Bluetooth Controller:
    清掉旧的（错误的）控制器缓存，让系统重新走一遍完整初始化。
 
 **结果**：重启后 `Address` 有值，`State: On`，固件版本变成 `v256 c256`（即 0x100），
-`Chipset: THIRD_PARTY_DONGLE`，A2DP/HID/BLE 服务全部注册成功。
+`Chipset: THIRD_PARTY_DONGLE`，A2DP/HID/BLE 服务全部注册成功；后续日常使用稳定。
 
 > 注意：`-ibtcompatbeta` 是**过渡性**参数。等 OpenCore / IntelBluetoothFirmware 上游适配 Tahoe 之后
 > 应当移除，否则可能在新版本上反而出问题。
 
 ---
 
-## 2. 蓝牙键盘每次开机都要重新配对
+## 3. 蓝牙键盘每次开机都要重新配对 · 已修复
 
 **现象**：键盘（HUAWEI 超薄键盘）配对一次能用，重启后又要长按配对键重新连，系统里还残留多条重复的配对记录。
 
@@ -77,7 +109,7 @@ Bluetooth Controller:
 
 ---
 
-## 3. 关闭开机啰嗦模式
+## 4. 关闭开机啰嗦模式
 
 调试期 `boot-args` 是：
 
@@ -93,13 +125,16 @@ Bluetooth Controller:
 alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta
 ```
 
-## 4. USB 端口未定制（遗留问题）
+---
+
+## 5. USB 端口未定制（遗留问题）
 
 脚本检查 `EFI/OC/Kexts` 时发现**没有 `USBMap.kext` / `USBPorts.kext`**，说明 USB 端口从未定制过。
 
 影响：
 
-- 蓝牙走的是 USB 内部端口（本机对应 `HS10` / Port 10），端口没映射时，睡眠唤醒后蓝牙可能掉线；
+- 蓝牙走的是 USB 内部端口（本机对应 `HS10` / Port 10）。蓝牙本身已按 §2 修好，
+  但端口没映射时，睡眠唤醒后仍可能掉线；
 - 摄像头、读卡器可能时好时坏；
 - 睡眠可能秒醒（`XHCI` 唤醒事件）。
 

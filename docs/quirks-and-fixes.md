@@ -7,19 +7,19 @@
 
 | 项目 | 状态 | 说明 |
 | --- | --- | --- |
-| 原装 Samsung PM981 / PM981a | ✅ 已换盘 | macOS 不支持，已换成兼容的 SATA / NVMe SSD，见 §1 |
+| 原装 Samsung PM981 / PM981a | ✅ 已换盘 | 不支持黑苹果，已换成宏碁（Acer）SATA 固态硬盘，见 §1 |
+| Intel 9560 Wi-Fi | ✅ 可用 | `AirportItlwm.kext` 驱动，日常使用已验证 |
 | Intel 9560 蓝牙 | ✅ 已修复 | `-ibtcompatbeta` + 清控制器缓存，见 §2 |
 | 蓝牙键盘开机自动回连 | ✅ 已修复 | 注入 `BluetoothLocalHostAddress` + `AutoSeek*`，见 §3 |
 | 板载触控板 | ✅ 可用 | `VoodooI2C` + `VoodooI2CHID` + `VoodooInput` 直接驱动，未做额外修补 |
 | 开机啰嗦模式 | ✅ 已关闭 | 见 §4 |
-| Wi-Fi | ❓ 未验证 | `AirportItlwm.kext` 已在 EFI 中启用，实际使用效果未记录 |
 | USB 端口定制 | ⚠️ 遗留问题 | 见 §5 |
 
 ---
 
 ## 0. 两个 EFI 分区：别改错盘
 
-这台机器上了双硬盘（Windows 512 GB + macOS 480 GB），`diskutil list` 能看到**两个 EFI 分区**：
+这台机器上了双硬盘（Windows 512 GB + macOS 480 GB，容量为早期记录，换盘后以实际为准），`diskutil list` 能看到**两个 EFI 分区**：
 
 ```
 disk0s1   EFI  NO NAME   314.6 MB   ← Windows 的 ESP
@@ -41,13 +41,12 @@ disk1s1   EFI  EFI       209.7 MB   ← OpenCore 在这里
 **原因**：PM981 系列是三星 OEM NVMe 盘，其主控与固件和 Apple 的 NVMe 驱动不兼容，
 属于**硬件层面**的问题。改 `config.plist`、加 `NVMeFix.kext`、换 SMBIOS 都解决不了，别在这上面耗时间。
 
-**解法**：物理换盘，二选一：
+**解法**：物理换盘。本机换上的是 **宏碁（Acer）SATA 固态硬盘**，走 AHCI、macOS 原生支持最好；
+如果机器只有 M.2 位，也可以换主控兼容 macOS 的 NVMe SSD（避开 PM981 / PM981a）。
 
-- **2.5" SATA SSD** —— 走 AHCI，macOS 原生支持最好（前提是机器有对应硬盘位）；
-- **兼容的 M.2 NVMe SSD** —— 选主控与 macOS 兼容的常见型号，避开 PM981 / PM981a。
-
-**结果**：换盘后安装、APFS、休眠唤醒均正常，可长期日常使用。EFI 中的 `NVMeFix.kext` +
-`SSDT-NVME.aml` 保留给 NVMe 盘做电源管理与自检优化；换 SATA 盘时这两项不生效，按需禁用即可。
+**结果**：换成宏碁 SATA 固态后，安装、APFS、休眠唤醒均正常，可长期日常使用。EFI 中的
+`NVMeFix.kext` + `SSDT-NVME.aml` 保留给 NVMe 盘做电源管理与自检优化；本机已换 SATA 盘，
+这两项实际不生效，按需禁用即可。
 
 > 换盘会改变磁盘容量和设备路径，[硬件文档](hardware.md) 里的分区布局只是当时的示例。
 

@@ -49,7 +49,7 @@ body:
     attributes:
       label: "硬盘 / Storage"
       description: "原装 Samsung PM981 / PM981a 不支持 macOS，请写清换成了什么盘（型号与容量更好）。"
-      placeholder: "宏碁 Acer SATA SSD 512 GB（替换原装 PM981）"
+      placeholder: "宏碁 Acer SA100 480GB SATA（替换原装 PM981）"
     validations:
       required: true
 
@@ -96,7 +96,7 @@ body:
     id: broken
     attributes:
       label: "❌ 不可用或有异常"
-      placeholder: "睡眠唤醒后蓝牙掉线；摄像头未验证"
+      placeholder: "睡眠唤醒后蓝牙掉线；摄像头不工作"
 
   - type: textarea
     id: changes
@@ -126,5 +126,4 @@ body:
   - type: markdown
     attributes:
       value: |
-        谢谢！记录会被整理进兼容性汇总表。若愿意补充宏碁盘的具体型号与摄像头状态，
-        那正是目前最缺的两项信息（电池剩余电量已确认正常）。
+        谢谢！记录会被整理进兼容性汇总表。若方便，附上 BIOS 版本——这是本机记录里唯一还缺的信息。

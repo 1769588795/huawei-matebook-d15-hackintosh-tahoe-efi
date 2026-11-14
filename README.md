@@ -6,7 +6,7 @@
 > macOS 26 Tahoe + OpenCore EFI，已在真机长期日常使用；含 SSDT、kext、脱敏后的 `config.plist` 与修复脚本。
 >
 > Keywords: Huawei MateBook D 15 hackintosh, macOS Tahoe, OpenCore EFI, i5-10210U,
-> Samsung PM981 unsupported on hackintosh, Acer SATA SSD replacement,
+> Samsung PM981 unsupported on hackintosh, Acer SA100 SATA SSD replacement,
 > Intel 9560 Wi-Fi and Bluetooth working, I2C trackpad.
 
 [![macOS](https://img.shields.io/badge/macOS-26.7.2-000000)](#)
@@ -22,7 +22,7 @@
    你需要用 [GenSMBIOS](https://github.com/corpnewt/GenSMBIOS) 生成属于自己的一套。
 3. 黑苹果违反 Apple 的最终用户许可协议（EULA），仅供**学习与个人研究**，请勿用于商业用途。
 4. **原装 Samsung PM981 / PM981a NVMe 固态硬盘不支持黑苹果（macOS）**，装系统前必须换盘；
-   本机换的是**宏碁（Acer）SATA 固态硬盘**。这一步不做，后面的 EFI 都用不上。详见 [docs/hardware.md](docs/hardware.md)。
+   本机换的是**宏碁 Acer SA100 480GB SATA 固态硬盘**。这一步不做，后面的 EFI 都用不上。详见 [docs/hardware.md](docs/hardware.md)。
 5. 照抄配置不保证能在你的机器上启动。**不同主板/BIOS 版本差异极大**，请自行调整。
 6. `EFI/OC/Kexts/` 与 `EFI/OC/Resources/` 内是第三方开源驱动的**预编译二进制**及主题资源
    （其中 `IntelBluetoothFirmware.kext` 内含 Intel 专有蓝牙固件）。它们不归本仓库的 MIT 许可证覆盖，
@@ -38,17 +38,17 @@
 | CPU | Intel Core i5-10210U（4 核 8 线程，Comet Lake-U） | ✅ 原生电源管理 |
 | 核显 | Intel UHD Graphics 620 | ✅ 硬件加速（QE/CI） |
 | 内存 | 16 GB | ✅ |
-| 硬盘 | 宏碁（Acer）SATA 固态硬盘（替换原装 `PM981`） | ✅ |
+| 硬盘 | 宏碁 Acer SA100 480GB SATA 固态硬盘（替换原装 `PM981`） | ✅ |
 | Wi-Fi / 蓝牙 | Intel Wireless-AC 9560（BT USB `8087:0AAA`） | ✅ 两者均可用（`AirportItlwm` / 蓝牙修复脚本） |
 | 声卡 | 板载 Realtek（`alcid=21`） | ✅ 扬声器/耳机 |
 | 触控板 | 板载 I2C HID 触控板 | ✅ 可用 |
-| 摄像头 | — | ❓ 待补充 |
+| 摄像头 | 板载 USB 摄像头 | ❌ 不可用 |
 | 电池 | 板载电池 | ✅ 剩余电量正常显示 |
 | 系统版本 | macOS 26.7.2（25G332） | ✅ |
 | SMBIOS 伪装 | `MacBookPro16,1` | ✅ |
 
 > **关于硬盘**：本机原配的 Samsung **PM981 / PM981a** 不支持黑苹果（安装器看不到盘、装上也会掉盘），
-> 已换成**宏碁（Acer）SATA 固态硬盘**后才完成安装与日常使用。换盘是这台机器装黑苹果的**前置条件**，
+> 已换成**宏碁 Acer SA100 480GB SATA 固态硬盘**后才完成安装与日常使用。换盘是这台机器装黑苹果的**前置条件**，
 > 详见 [docs/hardware.md](docs/hardware.md) 与 [踩坑记录](docs/quirks-and-fixes.md)。
 >
 > **关于无线、蓝牙与触控板**：Intel 9560 的 Wi-Fi 由 EFI 中的 `AirportItlwm.kext` 驱动、蓝牙由
@@ -197,8 +197,9 @@ open -a Terminal scripts/00-export-efi.command
 
 ## 已知问题
 
-- **USB 端口未定制**：`EFI/OC/Kexts` 里没有 `USBMap.kext` / `USBPorts.kext`。
-  蓝牙虽已修复，睡眠唤醒后仍可能掉线；摄像头、睡眠也可能受影响。建议用 [USBToolBox](https://github.com/USBToolBox/tool) 重新定制后再注入。
+- **USB 端口未定制**：没有 `USBMap.kext` / `USBPorts.kext`，但实测 **U 盘、鼠标接收器等即插即用，
+  日常完全正常**。已知影响是**板载摄像头不可用**，以及睡眠唤醒后蓝牙偶发掉线。
+  想彻底解决（比如要用摄像头）可用 [USBToolBox](https://github.com/USBToolBox/tool) 定制端口映射。
 - **AirportItlwm 与系统版本绑定**：Wi-Fi 已验证可用，但 `AirportItlwm.kext` 对 macOS 版本敏感，
   升级系统前请确认有对应版本，否则 Wi-Fi 可能失效。
 - **触控板手势未逐项验证**：指针与点击已确认可用，多指手势等行为请以你的实际机型为准。
@@ -216,7 +217,7 @@ open -a Terminal scripts/00-export-efi.command
 - **[Discussions](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions)**：
   提问、交流经验，或简单说一句「跑通了」。
 - **点个 Star**：让同机型搜索更容易找到这个仓库。
-- **[参与改进](CONTRIBUTING.md)**：反馈模板、还缺的信息（摄像头 / 宏碁盘具体型号）、PR 约定。
+- **[参与改进](CONTRIBUTING.md)**：反馈模板、还缺的信息（如 BIOS 版本）、PR 约定。
 - **[适配指南](docs/adaptation-guide.md)**：哪些必须改、哪些能复用、常见故障速查。
 - **[English README](README.en.md)**：方便分享给不使用中文的人。
 

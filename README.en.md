@@ -7,7 +7,7 @@
 > Includes SSDTs, kexts, a sanitized `config.plist`, and the fix scripts used on this machine.
 >
 > Keywords: Huawei MateBook D 15 hackintosh, macOS Tahoe, OpenCore EFI, i5-10210U,
-> Samsung PM981 unsupported on hackintosh, Acer SATA SSD replacement,
+> Samsung PM981 unsupported on hackintosh, Acer SA100 SATA SSD replacement,
 > Intel 9560 Wi-Fi and Bluetooth working, I2C trackpad.
 
 ---
@@ -20,7 +20,7 @@
 3. Hackintoshing violates Apple's EULA. **Study and personal research only**, not commercial use.
 4. **The stock Samsung PM981 / PM981a NVMe SSD is not supported by macOS.** Replace the drive
    before installing macOS — nothing else in this EFI helps until you do. This machine now runs an
-   **Acer SATA SSD**. See [docs/hardware.md](docs/hardware.md).
+   **Acer SA100 480GB SATA SSD**. See [docs/hardware.md](docs/hardware.md).
 5. **Copying this EFI does not guarantee a boot.** ACPI tables, USB port layout and device paths
    differ between boards and BIOS versions. See the [adaptation guide](docs/adaptation-guide.md).
 6. `EFI/OC/Kexts/` and `EFI/OC/Resources/` contain prebuilt third-party binaries and theme assets
@@ -37,11 +37,11 @@
 | CPU | Intel Core i5-10210U · 4C/8T · Comet Lake-U | Native power management |
 | iGPU | Intel UHD Graphics 620 | Hardware acceleration (QE/CI) |
 | RAM | 16 GB | Working |
-| Storage | Acer SATA SSD (replaced the stock PM981) | Working, daily use |
+| Storage | Acer SA100 480GB SATA SSD (replaced the stock PM981) | Working, daily use |
 | Wi-Fi / Bluetooth | Intel Wireless-AC 9560 (BT USB `8087:0AAA`) | Both working |
 | Audio | Onboard Realtek (`alcid=21`) | Speakers / headphone jack |
 | Trackpad | I2C HID trackpad | Working |
-| Camera | — | Not verified |
+| Camera | Onboard USB camera | Not working |
 | Battery | Onboard | Working — remaining charge / percentage shown correctly |
 | macOS | 26.7.2 (25G332) | Working |
 | SMBIOS | `MacBookPro16,1` (spoofed) | Working |
@@ -52,7 +52,9 @@ battery reporting (`SSDT-BAT0-HUAWEI` + `SMCBatteryManager` — remaining charge
 audio, graphics acceleration, CPU power management, installation / APFS / sleep-wake after the
 drive swap.
 
-**Not verified:** camera, individual multi-touch gestures.
+**Not working:** the onboard camera.
+
+**Not verified:** individual multi-touch gestures.
 
 ---
 
@@ -131,9 +133,10 @@ alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta -v debug=0x100
 
 ## Known issues
 
-- **USB ports are not mapped** — no `USBMap.kext` / `USBPorts.kext`. Bluetooth works but may drop
-  after sleep; camera and sleep can be affected. Map ports with
-  [USBToolBox](https://github.com/USBToolBox/tool).
+- **USB ports are not mapped** — no `USBMap.kext` / `USBPorts.kext`, but flash drives, mouse
+  receivers etc. work fine plug-and-play in daily use. Known side effects: **the onboard camera
+  does not work**, and Bluetooth may occasionally drop after sleep. Map ports with
+  [USBToolBox](https://github.com/USBToolBox/tool) if you need the camera.
 - **`AirportItlwm` is macOS-version-specific** — check for a matching build before upgrading macOS.
 - **Multi-touch gestures not individually verified** — pointer and clicks work.
 - **SMBIOS is spoofed** — `About This Mac` information is not the real hardware.

@@ -28,9 +28,9 @@
 
 | 机型 / BIOS | CPU | 硬盘 | macOS | OpenCore | 整体结果 | 来源 |
 | --- | --- | --- | --- | --- | --- | --- |
-| HUAWEI MateBook D 15 (2020) / BIOS 版本未记录 | i5-10210U · UHD 620 · 16 GB | 宏碁（Acer）SATA SSD，替换原装 PM981 | 26.7.2 (25G332) | 随仓库 EFI | ✅ 安装成功并长期日常使用 | 原机主实测 · v1.0 |
+| HUAWEI MateBook D 15 (2020) / BIOS 版本未记录 | i5-10210U · UHD 620 · 16 GB | 宏碁 Acer SA100 480GB SATA SSD（替换原装 PM981，PM981 保留跑 Windows） | 26.7.2 (25G332) | 随仓库 EFI | ✅ 安装成功并长期日常使用 | 原机主实测 · v1.0 |
 
-> 还缺的信息：这台机器的 **BIOS 版本**、**宏碁盘的具体型号与容量**。原机主补充后会更新本表。
+> 还缺的信息：这台机器的 **BIOS 版本**。原机主补充后会更新本表。
 
 ## 2. 部件可用性矩阵（上面这台实测机型）
 
@@ -45,8 +45,8 @@
 | 触控板 | ✅ | `VoodooI2C` + `VoodooI2CHID` + `VoodooInput`；指针与点击确认，多指手势未逐项验证 |
 | 声卡 | ✅ | AppleALC `alcid=21`，扬声器 / 耳机 |
 | 睡眠 / 唤醒 | 🟡 | 换盘后基本正常，但 **USB 端口未定制**，唤醒后蓝牙偶发掉线 |
-| USB 端口 | 🟡 | 未注入 `USBMap.kext`，建议用 USBToolBox 按自己机器重做 |
-| 摄像头 | ❓ | 未记录 |
+| USB 端口 | ✅ | 未做 `USBMap.kext` 定制，但 U 盘 / 鼠标接收器实测即插即用、日常正常 |
+| 摄像头 | ❌ | 板载 USB 摄像头未被驱动，大概率与端口未映射有关，见 [踩坑 §5](quirks-and-fixes.md) |
 | 电池读数 | ✅ | 剩余电量 / 百分比正常显示；`SSDT-BAT0-HUAWEI.aml` + `SMCBatteryManager.kext` |
 | 独立显卡 | — | 该机型无独显；带独显的机器**不要直接套**这份 EFI |
 
@@ -56,7 +56,7 @@
 
 | 现象 | 原因 | 处理 |
 | --- | --- | --- |
-| 安装器看不到硬盘、装上后掉盘 | 原装 **Samsung PM981 / PM981a** 不支持 macOS | **物理换盘**。本机换的是宏碁（Acer）SATA 固态；也可选主控兼容的 M.2 NVMe，别再用 PM981 |
+| 安装器看不到硬盘、装上后掉盘 | 原装 **Samsung PM981 / PM981a** 不支持 macOS | **物理换盘**。本机换的是宏碁 Acer SA100 480GB SATA 固态；也可选主控兼容的 M.2 NVMe，别再用 PM981 |
 | 用占位符 `config.plist` 登录 iCloud / iMessage 失败 | SMBIOS 已脱敏 | 用 [GenSMBIOS](https://github.com/corpnewt/GenSMBIOS) 生成四项成套值 |
 | 换了 EFI 仍卡在启动 | ACPI / USB / 设备路径因机而异 | 按 [适配指南](adaptation-guide.md) 逐项核对，别整包照抄 |
 | 卡住了却看不到日志 | 啰嗦模式被人为关掉 | 本仓库 EFI **默认带 `-v debug=0x100`**；若被删，用 `scripts/04` 开回来，拍下卡住时最后几行 |

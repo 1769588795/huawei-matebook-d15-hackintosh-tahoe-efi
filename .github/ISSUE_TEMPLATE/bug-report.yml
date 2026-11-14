@@ -43,7 +43,7 @@ body:
     attributes:
       label: "硬盘"
       description: "PM981 / PM981a 不受 macOS 支持，未换盘的问题通常不属本仓库缺陷。"
-      placeholder: "宏碁 SATA SSD（原装 PM981 已换）"
+      placeholder: "宏碁 Acer SA100 480GB SATA（原装 PM981 已换）"
     validations:
       required: true
 

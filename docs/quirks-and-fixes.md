@@ -7,14 +7,15 @@
 
 | 项目 | 状态 | 说明 |
 | --- | --- | --- |
-| 原装 Samsung PM981 / PM981a | ✅ 已换盘 | 不支持黑苹果，已换成宏碁（Acer）SATA 固态硬盘，见 §1 |
+| 原装 Samsung PM981 / PM981a | ✅ 已换盘 | 不支持黑苹果，macOS 已换装到宏碁 Acer SA100 480GB SATA 固态（PM981 保留跑 Windows），见 §1 |
 | Intel 9560 Wi-Fi | ✅ 可用 | `AirportItlwm.kext` 驱动，日常使用已验证 |
 | Intel 9560 蓝牙 | ✅ 已修复 | `-ibtcompatbeta` + 清控制器缓存，见 §2 |
 | 蓝牙键盘开机自动回连 | ✅ 已修复 | 注入 `BluetoothLocalHostAddress` + `AutoSeek*`，见 §3 |
 | 板载触控板 | ✅ 可用 | `VoodooI2C` + `VoodooI2CHID` + `VoodooInput` 直接驱动，未做额外修补 |
 | 电池剩余电量 | ✅ 可用 | `SSDT-BAT0-HUAWEI.aml` + `SMCBatteryManager.kext`，百分比正常显示 |
 | 开机啰嗦模式 | ✅ 安装期默认开启 | 便于排错；装好系统后用 `scripts/03` 关闭，见 §4 |
-| USB 端口定制 | ⚠️ 遗留问题 | 见 §5 |
+| 板载摄像头 | ❌ 不可用 | 板载 USB 摄像头未被驱动，见 §5 |
+| USB 端口 | ✅ 日常使用正常 | U 盘、鼠标 2.4G 接收器等即插即用；未做 USBMap 定制，已知影响见 §5 |
 
 ---
 
@@ -42,14 +43,16 @@ disk1s1   EFI  EFI       209.7 MB   ← OpenCore 在这里
 **原因**：PM981 系列是三星 OEM NVMe 盘，其主控与固件和 Apple 的 NVMe 驱动不兼容，
 属于**硬件层面**的问题。改 `config.plist`、加 `NVMeFix.kext`、换 SMBIOS 都解决不了，别在这上面耗时间。
 
-**解法**：物理换盘。本机换上的是 **宏碁（Acer）SATA 固态硬盘**，走 AHCI、macOS 原生支持最好；
+**解法**：物理换盘。本机把 macOS 装到了 **宏碁 Acer SA100 480GB SATA 固态硬盘（2.5"）** 上，
+走 AHCI、macOS 原生支持最好；原装 PM981 512GB 留在机器里继续跑 Windows，macOS 完全不碰它。
 如果机器只有 M.2 位，也可以换主控兼容 macOS 的 NVMe SSD（避开 PM981 / PM981a）。
 
-**结果**：换成宏碁 SATA 固态后，安装、APFS、休眠唤醒均正常，可长期日常使用。EFI 中的
-`NVMeFix.kext` + `SSDT-NVME.aml` 保留给 NVMe 盘做电源管理与自检优化；本机已换 SATA 盘，
+**结果**：换成宏碁 SA100 后，安装、APFS、休眠唤醒均正常，可长期日常使用。EFI 中的
+`NVMeFix.kext` + `SSDT-NVME.aml` 保留给 NVMe 盘做电源管理与自检优化；本机 macOS 走 SATA 盘，
 这两项实际不生效，按需禁用即可。
 
-> 换盘会改变磁盘容量和设备路径，[硬件文档](hardware.md) 里的分区布局只是当时的示例。
+> [硬件文档](hardware.md) 里的分区布局已按本机现状记录：`disk0` = PM981 512GB（Windows），
+> `disk1` = 宏碁 SA100 480GB（macOS，OpenCore 在它的 ESP 上）。
 
 ---
 
@@ -126,19 +129,21 @@ Bluetooth Controller:
 
 ---
 
-## 5. USB 端口未定制（遗留问题）
+## 5. USB 端口未定制（实测日常正常，遗留摄像头问题）
 
 脚本检查 `EFI/OC/Kexts` 时发现**没有 `USBMap.kext` / `USBPorts.kext`**，说明 USB 端口从未定制过。
+但实测结果比预期好：**U 盘、鼠标 2.4G 接收器等外设即插即用，日常使用完全正常**，所以没有专门处理。
 
-影响：
+已知影响（按实测严重度排序）：
 
+- **板载摄像头确认不可用**——它是走 USB 的内建设备，端口没映射时大概率根本没被枚举；
 - 蓝牙走的是 USB 内部端口（本机对应 `HS10` / Port 10）。蓝牙本身已按 §2 修好，
   但端口没映射时，睡眠唤醒后仍可能掉线；
-- 摄像头、读卡器可能时好时坏；
 - 睡眠可能秒醒（`XHCI` 唤醒事件）。
 
-**待办**：用 [USBToolBox](https://github.com/USBToolBox/tool) 在 Windows 下（或用 macOS 版）导出端口表，
-生成 `USBMap.kext` 放进 `Kexts/`，并在 `Kernel → Add` 里登记。重点确认内建蓝牙端口类型是 `Internal (255)`。
+**如果你想彻底解决（尤其是想用摄像头）**：用 [USBToolBox](https://github.com/USBToolBox/tool)
+导出端口表，生成 `USBMap.kext` 放进 `Kexts/`，并在 `Kernel → Add` 里登记。
+重点确认内建蓝牙端口类型是 `Internal (255)`，摄像头端口同理标为 Internal。
 
 ---
 

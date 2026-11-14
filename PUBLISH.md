@@ -33,7 +33,7 @@ find . \( -name "*.old*" -o -name "config.plist.*" \) -type f
 > 整套 SMBIOS 凭据公开，且 Git 历史无法真正抹除。发现备份文件请直接移出仓库，不要用 `git rm` 了事。
 > 本仓库的 `.gitignore` 已加入 `*.old*` 与 `EFI/OC/config.plist.*` 规则作兜底。
 
-硬件清单里仍标 ❓ 的项目（摄像头等）欢迎按 [CONTRIBUTING.md](CONTRIBUTING.md) 补充；机型、Wi-Fi、蓝牙、触控板、电池与硬盘（宏碁 SATA 固态替换 PM981）均已由原机主确认。
+硬件清单仍缺 **BIOS 版本**，欢迎按 [CONTRIBUTING.md](CONTRIBUTING.md) 补充；机型、Wi-Fi、蓝牙、触控板、电池、USB 日常使用与硬盘（宏碁 Acer SA100 480GB SATA 替换 PM981）均已由原机主确认，摄像头确认不可用。
 
 ---
 

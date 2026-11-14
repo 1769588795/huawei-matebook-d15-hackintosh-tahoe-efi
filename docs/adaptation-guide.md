@@ -29,7 +29,7 @@ Intel Wireless-AC 9560 无线网卡，尤其是 HUAWEI MateBook D 15（2020）�
 | 项目 | 为什么 | 怎么做 |
 | --- | --- | --- |
 | SMBIOS 四项 | 仓库里是占位符，直接用会跟别人撞号、iServices 被封 | 用 GenSMBIOS 生成**成套**的 `SystemSerialNumber` / `MLB` / `SystemUUID` / `ROM`，见 [README 第 1 步](../README.md) |
-| USB 端口映射 | 本仓库**没有** `USBMap.kext`，端口布局每台机器都不同；会牵连蓝牙、摄像头、睡眠 | [USBToolBox](https://github.com/USBToolBox/tool) 导出端口表，内建蓝牙端口类型设 `Internal (255)`，登记进 `Kernel → Add` |
+| USB 端口映射 | 本仓库**没有** `USBMap.kext`；本机不测也能日常用（U 盘 / 鼠标正常，代价是摄像头不可用），但端口布局每台机器都不同，别的机器可能牵连蓝牙、摄像头、睡眠 | [USBToolBox](https://github.com/USBToolBox/tool) 导出端口表，内建蓝牙端口类型设 `Internal (255)`，登记进 `Kernel → Add` |
 | ACPI 表 | 多个 SSDT 是按本机 DSDT 写的，路径名对不上就无效甚至报错 | 重点重做 `SSDT-BAT0-HUAWEI`、`SSDT-BrightFN`、`SSDT-GPI0-GPHD`、`SSDT-I2CxConf`、`SSDT-PNLFCFL`、`SSDT-PTSWAK-SLEEP`；用 SSDTTime / 自行提取 DSDT |
 | DVMT / 显存 | BIOS 锁死 32 MB 时核显容易黑屏、花屏 | BIOS 里调到 ≥ 64 MB；调不了就用 `framebuffer-patch-enable` + `framebuffer-stolenmem` |
 | 蓝牙 NVRAM 的 MAC | `BluetoothLocalHostAddress` 是这台机器的控制器地址 | 换机后重跑 `scripts/02-fix-keyboard-autoconnect.command` |
@@ -94,4 +94,4 @@ Intel Wireless-AC 9560 无线网卡，尤其是 HUAWEI MateBook D 15（2020）�
 的模板报一下机型、BIOS 版本、换的什么盘、改了哪几处 —— 也可以直接填
 [兼容性反馈表单](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/issues/new?template=compatibility-report.yml)，
 结果会汇总进 [兼容性表](compatibility.md)。哪怕只写一句「某某机型 + 这版 EFI 能进安装器」，
-对下一个人都有用。目前硬件表里摄像头、宏碁盘的具体型号仍缺记录，也欢迎补充（电池剩余电量已确认正常显示）。
+对下一个人都有用。目前这台机器的 BIOS 版本仍缺记录，欢迎补充（摄像头已确认不可用，硬盘已确认为宏碁 Acer SA100 480GB）。

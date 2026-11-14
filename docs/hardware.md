@@ -9,7 +9,7 @@
 | 核显 | Intel UHD Graphics 620（`0x9B41`） | `device-id` 注入 + WhateverGreen，QE/CI 正常 |
 | 独显 | 无 / 已屏蔽 | — |
 | 内存 | 16 GB DDR4 | 正常 |
-| 存储 | 宏碁（Acer）SATA 固态硬盘（替换原装 Samsung PM981 / PM981a） | 正常，见下方「原装 PM981 必须更换」 |
+| 存储 | 宏碁 Acer SA100 480GB SATA 固态硬盘（替换原装 Samsung PM981 / PM981a） | 正常，见下方「原装 PM981 必须更换」 |
 | 无线网卡 | Intel Wireless-AC 9560 | ✅ Wi-Fi（`AirportItlwm`）与蓝牙均验证可用，蓝牙修复见 [踩坑记录](quirks-and-fixes.md) |
 | 声卡 | Realtek 板载（`alcid=21`） | 扬声器 / 耳机自动切换 |
 | 触控板 | 板载 I2C HID 触控板 | ✅ 可用（VoodooI2C + VoodooI2CHID + VoodooInput） |
@@ -28,19 +28,20 @@ MateBook D 15（2020）原配的 **Samsung PM981 / PM981a（OEM NVMe 固态硬�
 - 典型表现：安装器里看不到目标盘，或安装过程卡死 / 反复重启；
 - 即便勉强装上，也容易出现随机 I/O 报错、休眠唤醒失败、长时间使用后掉盘。
 
-**解法只有一个：物理换盘。** 本机实际换上的是 **宏碁（Acer）SATA 固态硬盘**，装好 macOS 后长期日常使用正常。
+**解法只有一个：物理换盘。** 本机实际换上的是 **宏碁 Acer SA100 480GB SATA 固态硬盘（2.5"）**，装好
+macOS 后长期日常使用正常；原装 PM981 512GB 仍留在机器里跑 Windows，macOS 完全不碰它。
 按机器实际接口，可选方案：
 
 | 方案 | 说明 |
 | --- | --- |
-| **2.5" SATA SSD（本机采用：宏碁 Acer）** | 走 AHCI，macOS 原生支持最好，最省心 |
+| **2.5" SATA SSD（本机采用：宏碁 Acer SA100 480GB）** | 走 AHCI，macOS 原生支持最好，最省心 |
 | M.2 NVMe SSD | 选主控与 macOS 兼容的常见型号，**不要**再用 PM981 / PM981a |
 
 换盘后再安装 macOS、部署本仓库的 EFI。EFI 里仍保留 `NVMeFix.kext` 与 `SSDT-NVME.aml`，
 用于改善兼容 NVMe 盘的电源管理与自检；本机已换 SATA 盘，这两项实际不生效，可按需禁用。
 
-> 换盘会改变容量与设备路径，下面的分区布局是早期记录（当时为 480 GB 盘），请以你自己的
-> `diskutil list` 为准。宏碁盘的具体型号与容量未记录，欢迎 PR 补充。
+> 换盘会改变容量与设备路径，下面的分区布局就是本机现状：原装 PM981 512GB（Windows，`disk0`）+
+> 宏碁 SA100 480GB（macOS，`disk1`）。请以你自己的 `diskutil list` 为准。
 
 ## BIOS 设置
 

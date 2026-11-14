@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "💬 提问 · 经验交流 · 装机问答"
+    url: "https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions"
+    about: "不确定怎么改、想找同机型的人聊聊，或只想说一句「跑通了」——请先来这里。Questions and show-and-tell belong here."
+  - name: "📊 机型 × 可用性兼容性汇总表"
+    url: "https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/blob/main/docs/compatibility.md"
+    about: "先查一下有没有人用过和你一样的机型 / 硬盘 / BIOS 组合。"
+  - name: "🔧 适配指南与故障速查"
+    url: "https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/blob/main/docs/adaptation-guide.md"
+    about: "哪些必须改、哪些可以复用、8 条常见故障速查。"
+  - name: "📥 下载 v1.0 的 EFI 压缩包"
+    url: "https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/releases"
+    about: "不想 clone 整个仓库？Release 里有可直接解压使用的 EFI 包。"

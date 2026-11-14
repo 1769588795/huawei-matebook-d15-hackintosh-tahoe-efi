@@ -1,0 +1,130 @@
+name: "📋 兼容性反馈 / Compatibility report"
+description: "在自己的机器上跑通了（或卡住了）？留一条记录，帮下一个人少踩坑。Success and failure reports both help."
+title: "[Compat] "
+labels: ["compatibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这份 EFI 目前只有**一台机器**的实测样本。你的机型、BIOS 版本、换的什么盘、哪些硬件能用，
+        对同机型的人价值很大 —— **跑通了也欢迎提交，失败案例同样有用**。
+
+        只是想提问、交流经验或找人一起排查？请去 [Discussions](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions)；
+        本表单用于留下一条**可归档的兼容性记录**，会被汇总进
+        [机型 × 可用性表](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/blob/main/docs/compatibility.md)。
+
+        This form is also fine in English. / 用英文填写也可以。
+
+  - type: input
+    id: machine
+    attributes:
+      label: "机型 / Laptop model"
+      description: "品牌 + 具体型号 + 年份或硬件版本；不确定就写机身标签上的型号。"
+      placeholder: "HUAWEI MateBook D 15 (2020) / BohrD-WXX9"
+    validations:
+      required: true
+
+  - type: input
+    id: cpu
+    attributes:
+      label: "CPU / 显卡"
+      placeholder: "i5-10210U / UHD Graphics 620（无独显）"
+
+  - type: input
+    id: bios
+    attributes:
+      label: "BIOS 版本"
+      placeholder: "1.23 / 不确定"
+
+  - type: input
+    id: macos
+    attributes:
+      label: "macOS 版本"
+      placeholder: "26.7.2 (25G332)"
+    validations:
+      required: true
+
+  - type: input
+    id: storage
+    attributes:
+      label: "硬盘 / Storage"
+      description: "原装 Samsung PM981 / PM981a 不支持 macOS，请写清换成了什么盘（型号与容量更好）。"
+      placeholder: "宏碁 Acer SATA SSD 512 GB（替换原装 PM981）"
+    validations:
+      required: true
+
+  - type: input
+    id: opencore
+    attributes:
+      label: "OpenCore 版本"
+      placeholder: "随仓库 EFI / 0.x.x / 不确定"
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: "用了本仓库的哪些部分"
+      multiple: true
+      options:
+        - "整包 EFI（拷进 ESP）"
+        - "只参考 kext 组合与加载顺序"
+        - "只跑了修复脚本"
+        - "只参考文档，自己另配 EFI"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: outcome
+    attributes:
+      label: "整体结果"
+      options:
+        - "✅ 安装成功并可日常使用"
+        - "🟡 能启动，但部分硬件不工作"
+        - "🔴 卡在 OpenCore 启动阶段"
+        - "🔴 安装器看不到硬盘 / 装不上"
+        - "⬜ 尚未尝试，先记录硬件信息"
+    validations:
+      required: true
+
+  - type: textarea
+    id: working
+    attributes:
+      label: "✅ 确认可用"
+      description: "例如：Wi-Fi、蓝牙、触控板、声卡、核显加速、睡眠唤醒、摄像头、电池读数。"
+      placeholder: "Wi-Fi / 蓝牙 / 触控板 / 声卡 / 核显加速 可用"
+
+  - type: textarea
+    id: broken
+    attributes:
+      label: "❌ 不可用或有异常"
+      placeholder: "睡眠唤醒后蓝牙掉线；摄像头未验证"
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: "🔧 为了跑通改了什么"
+      description: "改过的 SMBIOS、SSDT、USB 端口映射、DVMT、boot-args、kext 版本等，以及为什么。"
+      placeholder: "用 GenSMBIOS 重生成四项；删除了机器专用 SSDT-XHC.aml；重做 USB 映射"
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: "备注 / 日志 / 截图"
+      description: "可拖拽图片到此处。贴日志前请先按下方要求脱敏。"
+      render: shell
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: "⚠️ 提交前确认"
+      description: "公开 Issue 会被搜索引擎收录，且无法真正抹除。"
+      options:
+        - label: "我已检查所填内容与附件，不含真实 SystemSerialNumber / MLB / SystemUUID / ROM / 蓝牙 MAC / Apple ID / 主机名，也未附带 config.plist.old* 备份"
+          required: true
+        - label: "我读过 [适配指南](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/blob/main/docs/adaptation-guide.md) 和 [已知问题](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi#已知问题)"
+          required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        谢谢！记录会被整理进兼容性汇总表。若愿意补充宏碁盘的具体型号与摄像头状态，
+        那正是目前最缺的两项信息（电池剩余电量已确认正常）。

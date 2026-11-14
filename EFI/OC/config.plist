@@ -2652,7 +2652,7 @@
 				AAAAAAAAAAAAAAAAAAA=
 				</data>
 				<key>boot-args</key>
-				<string>alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta</string>
+				<string>alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta -v debug=0x100</string>
 				<key>csr-active-config</key>
 				<data>
 				/w8AAA==

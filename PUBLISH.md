@@ -33,7 +33,7 @@ find . \( -name "*.old*" -o -name "config.plist.*" \) -type f
 > 整套 SMBIOS 凭据公开，且 Git 历史无法真正抹除。发现备份文件请直接移出仓库，不要用 `git rm` 了事。
 > 本仓库的 `.gitignore` 已加入 `*.old*` 与 `EFI/OC/config.plist.*` 规则作兜底。
 
-硬件清单里仍标 ❓ 的项目（摄像头、电池等）欢迎按 [CONTRIBUTING.md](CONTRIBUTING.md) 补充；机型、Wi-Fi、蓝牙、触控板与硬盘（宏碁 SATA 固态替换 PM981）均已由原机主确认。
+硬件清单里仍标 ❓ 的项目（摄像头等）欢迎按 [CONTRIBUTING.md](CONTRIBUTING.md) 补充；机型、Wi-Fi、蓝牙、触控板、电池与硬盘（宏碁 SATA 固态替换 PM981）均已由原机主确认。
 
 ---
 
@@ -79,12 +79,17 @@ git push -u origin main
 
 - **Topics**（右上 About 齿轮）：`hackintosh` `opencore` `opencore-efi` `efi` `macos` `macos-tahoe` `tahoe` `huawei` `matebook` `matebook-d15` `comet-lake` `i5-10210u` `intel-wifi`
 - **About → Description**：用上面那句英文
-- **Releases**：如果你之后更新了 EFI，打个 `v1.0` tag 方便别人下载：
+- **Releases**：`v1.0` 已发布，附带 `EFI-v1.0.zip`（只含 `EFI/`，解压即可拷进 ESP，
+  不含文档与 git 历史），方便不想 clone 仓库的人直接下载。以后更新 EFI 时打新 tag：
 
 ```bash
-git tag -a v1.0 -m "Working EFI, macOS 26.7.2"
-git push origin v1.0
+git tag -a v1.1 -m "Update EFI for macOS 26.x"
+git push origin v1.1
 ```
+
+> ⚠️ **打包原则**：只用 `git archive HEAD EFI/` 生成压缩包，别对下载下来的目录直接 `zip -r` ——
+> 那样很容易把 `config.plist.old*` 备份和真实序列号一起打进去，发布出去就无法收回。
+> 生成后必须解压复扫一遍占位符与备份文件，再上传。
 
 ---
 
@@ -106,8 +111,11 @@ git push origin v1.0
 | `docs/hardware.md` | 详细硬件清单 + PM981 换盘说明 + BIOS 开关清单 + 分区布局 |
 | `docs/adaptation-guide.md` | 把 EFI 适配到其它机器：必须改 / 可复用 / 验证顺序 / 故障速查 |
 | `docs/quirks-and-fixes.md` | 状态速查表 + 踩坑过程（PM981 换宏碁 SATA 盘、蓝牙固件 v0 c0、键盘重配对、啰嗦模式、USB 端口） |
+| `docs/compatibility.md` | 机型 × 可用性汇总表，社区反馈可持续追加 |
 | `CONTRIBUTING.md` | 反馈模板、缺失信息清单、PR 约定与隐私注意事项 |
-| `scripts/01~03` | 已在真机验证过的修复脚本，带 `--dry-run` |
+| `.github/ISSUE_TEMPLATE/` | 兼容性反馈 / 问题报告表单、Discussions 引导、PR 模板 |
+| `scripts/01~03` | 已在真机验证过的修复脚本，带 `--dry-run`；`03` 装好系统后关闭啰嗦模式 |
+| `scripts/04` | 安装 / 排错阶段一键开启啰嗦模式（`-v debug=0x100`，`03` 的反向操作，同样带 `--dry-run` 与自动备份） |
 | `scripts/00` | 从本机导出 EFI + 自动脱敏序列号 |
 | `LICENSE` | MIT |
 | `.gitignore` | 挡掉 `.DS_Store`、zip、备份目录、日志，以及**含真实序列号的 `*.old*` / `config.plist.*`** |

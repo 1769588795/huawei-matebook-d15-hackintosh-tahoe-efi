@@ -1,0 +1,84 @@
+name: "🐛 启动 / 硬件问题 / Boot or hardware issue"
+description: "卡在 OpenCore、装不上系统，或某个部件不工作。纯提问请先去 Discussions。"
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **先自查**：[README「先读这一段」](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi#-先读这一段)、
+        [适配指南的故障速查](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/blob/main/docs/adaptation-guide.md)、
+        [踩坑记录](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/blob/main/docs/quirks-and-fixes.md)。
+
+        两台机器的 ACPI 表、USB 端口布局、BIOS 版本几乎不可能完全一样。请尽量给出可复现的信息，
+        否则维护者也无法判断问题是否出在本仓库的 EFI 上。
+
+        **只是想问「怎么装」「能不能用」？** 请用 [Discussions](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions)。
+        **机器跑通了想留档？** 请用「📋 兼容性反馈」表单。
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: "卡在哪一步"
+      options:
+        - "OpenCore 菜单不出现 / 无法引导"
+        - "OpenCore 引导 macOS 时卡住或 panic"
+        - "安装器看不到硬盘 / 安装失败"
+        - "已装好，某个硬件不工作"
+        - "睡眠 / 唤醒 / 重启异常"
+        - "文档或脚本本身有误"
+    validations:
+      required: true
+
+  - type: input
+    id: machine
+    attributes:
+      label: "机型 / macOS / OpenCore 版本"
+      placeholder: "MateBook D 15 (2020) / 26.7.2 / 随仓库 EFI"
+    validations:
+      required: true
+
+  - type: input
+    id: storage
+    attributes:
+      label: "硬盘"
+      description: "PM981 / PM981a 不受 macOS 支持，未换盘的问题通常不属本仓库缺陷。"
+      placeholder: "宏碁 SATA SSD（原装 PM981 已换）"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "复现步骤"
+      description: "做了什么、按什么顺序、用了哪个下载物（Release 的 EFI zip / clone 的仓库）。"
+      placeholder: "1. 下载 v1.0 的 EFI-v1.0.zip\n2. 用 GenSMBIOS 填好四项\n3. 拷入 ESP 后重启…"
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "期望结果 / 实际结果"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "报错 / 日志 / 截图"
+      description: "本仓库 EFI 默认已开启啰嗦模式（-v debug=0x100）。请贴出或拍下卡住时最后几行日志，比一句「进不去」有用得多；可直接拖图进来。"
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: "提交前确认"
+      options:
+        - label: "我已用自己的 GenSMBIOS 值替换占位符（四项成套）"
+          required: true
+        - label: "我已检查日志与附件，不含真实序列号 / MLB / SystemUUID / ROM / MAC / Apple ID / 主机名，也没有 config.plist.old* 备份"
+          required: true
+        - label: "我读过 README 的「先读这一段」与已知问题"
+          required: false

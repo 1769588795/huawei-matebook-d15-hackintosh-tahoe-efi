@@ -4,7 +4,7 @@
 这台机器的 EFI 已经在日常使用中跑通了，但只有一台机器的样本；你的机型、BIOS 版本、
 换的什么盘、哪一项能用哪一项不能，对下一个人价值很大。
 
-[English README](README.en.md) · [适配指南](docs/adaptation-guide.md) · [硬件清单](docs/hardware.md)
+[English README](README.en.md) · [适配指南](docs/adaptation-guide.md) · [兼容性汇总](docs/compatibility.md) · [硬件清单](docs/hardware.md)
 
 ---
 
@@ -12,7 +12,7 @@
 
 1. **报告兼容性**：你的机型 / BIOS 版本 / macOS 版本 / 换的什么盘 / 哪些硬件工作、哪些不工作。
    失败的案例同样有价值，能帮别人少踩一个坑。
-2. **补全缺失信息**：硬件表里还标 ❓ 的**摄像头**、**电池状态**，以及**宏碁 SATA 固态硬盘的具体型号与容量**。
+2. **补全缺失信息**：硬件表里还标 ❓ 的**摄像头**，以及**宏碁 SATA 固态硬盘的具体型号与容量**；电池剩余电量已确认正常显示。
 3. **说明配置差异**：如果你为自己的机器改了 SSDT / kext / boot-args，写清改了什么、为什么、结果如何。
 
 顺手点个 Star 也算贡献——它能让这个仓库在同机型搜索里排得更靠前。
@@ -21,8 +21,10 @@
 
 ## 反馈模板
 
-复制下面这段去开 [Discussion](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions)
-或 Issue 即可，不确定的项留空：
+最省事的是填 **[兼容性反馈表单](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/issues/new?template=compatibility-report.yml)**：
+字段有提示，提交后会被整理进 [机型 × 可用性汇总表](docs/compatibility.md)。
+也可以复制下面这段去开 [Discussion](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions)
+或普通 Issue，不确定的项留空：
 
 ```text
 机型 / 型号：        （例：HUAWEI MateBook D 15 2020 / 其它品牌型号）

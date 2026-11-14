@@ -1,6 +1,6 @@
 # HUAWEI MateBook D 15 (2020) Hackintosh · macOS 26 Tahoe · OpenCore EFI
 
-[English README](README.en.md) · [适配指南](docs/adaptation-guide.md) · [参与改进](CONTRIBUTING.md)
+[English README](README.en.md) · [适配指南](docs/adaptation-guide.md) · [兼容性汇总](docs/compatibility.md) · [参与改进](CONTRIBUTING.md) · [下载 EFI v1.0](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/releases/latest)
 
 > 一台 HUAWEI MateBook D 15（2020 款，Intel i5-10210U / Comet Lake-U）的黑苹果（Hackintosh）配置与踩坑记录。
 > macOS 26 Tahoe + OpenCore EFI，已在真机长期日常使用；含 SSDT、kext、脱敏后的 `config.plist` 与修复脚本。
@@ -43,7 +43,7 @@
 | 声卡 | 板载 Realtek（`alcid=21`） | ✅ 扬声器/耳机 |
 | 触控板 | 板载 I2C HID 触控板 | ✅ 可用 |
 | 摄像头 | — | ❓ 待补充 |
-| 电池 | — | ❓ 待补充 |
+| 电池 | 板载电池 | ✅ 剩余电量正常显示 |
 | 系统版本 | macOS 26.7.2（25G332） | ✅ |
 | SMBIOS 伪装 | `MacBookPro16,1` | ✅ |
 
@@ -55,7 +55,11 @@
 > `IntelBluetoothFirmware` + `BlueToolFixup` + `-ibtcompatbeta` 修复，触控板由 `VoodooI2C` +
 > `VoodooI2CHID` + `VoodooInput` 驱动，三者均已在日常使用中验证可用。
 >
+> **关于电池**：`SSDT-BAT0-HUAWEI.aml` + `SMCBatteryManager.kext` 已启用，菜单栏剩余电量与百分比正常显示。
+>
 > ❓ 表示该项目未做验证或原作者未记录，欢迎 PR 补充。
+>
+> 别人的机器跑得怎么样？见 [机型 × 可用性汇总表](docs/compatibility.md) —— 目前只有这一台的实测样本，等你的记录。
 
 ---
 
@@ -74,11 +78,14 @@
 │   ├── 00-export-efi.command
 │   ├── 01-fix-bluetooth.command
 │   ├── 02-fix-keyboard-autoconnect.command
-│   └── 03-disable-verbose-boot.command
+│   ├── 03-disable-verbose-boot.command  # 装好后关闭啰嗦模式
+│   └── 04-enable-verbose-boot.command  # 安装 / 排错时开启啰嗦模式
 ├── docs/
 │   ├── hardware.md         # 详细硬件与 BIOS 设置
 │   ├── adaptation-guide.md # 把 EFI 适配到你自己的机器 + 故障速查
+│   ├── compatibility.md    # 机型 × 可用性汇总（社区反馈）
 │   └── quirks-and-fixes.md # 踩坑记录：PM981 换盘 / 蓝牙 / 键盘 / 啰嗦模式 / USB
+├── .github/                # Issue 表单、PR 模板与反馈引导
 ├── README.en.md            # 英文版 README
 ├── CONTRIBUTING.md         # 反馈模板、缺失信息清单与贡献约定
 ├── PUBLISH.md              # 发布到 GitHub 的操作指引
@@ -92,7 +99,7 @@
 `NVRAM → 7C436110-AB2A-4BBB-A880-FE41995C9F82 → boot-args`
 
 ```
-alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta
+alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta -v debug=0x100
 ```
 
 | 参数 | 作用 |
@@ -102,12 +109,24 @@ alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta
 | `lilucpu=10` | 让 Lilu 按 Comet Lake（10 代）处理 CPU 相关补丁 |
 | `keepsyms=1` | panic 时保留符号，方便排错，日常可留 |
 | `-ibtcompatbeta` | 让 Intel 蓝牙在新版 macOS 上走兼容模式，解决固件 `v0 c0`、地址为空 |
+| `-v` | **啰嗦模式**：开机滚动内核日志，安装 / 排错阶段默认开启，卡住时能看到停在哪一步 |
+| `debug=0x100` | 保留调试输出，配合 `-v` 定位 kernel panic |
 
-调试期曾用 `-v debug=0x100`，现已由 `scripts/03` 清除（闭嘴模式）。需要排障时再加回来。
+> **为什么公开发布的 EFI 默认带 `-v`**：下载这份 EFI 的人大多正在装系统，黑屏或卡住时没有日志几乎无法排错。
+> 装好系统、逐项验收硬件之后，跑 `scripts/03-disable-verbose-boot.command` 关掉即可恢复安静启动；
+> 以后想再排错，用 `scripts/04-enable-verbose-boot.command` 一键开回来。
+> 两个脚本只增删这两个参数、不动其余配置，且改前都会自动备份 `config.plist`。
 
 ---
 
 ## 使用步骤
+
+> **不想用 git？** 直接下载 [v1.0 的 `EFI-v1.0.zip`](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/releases/latest)，
+> 解压出的 `EFI/` 就是下面要拷进 ESP 的目录（包内附 `BEFORE-USE.txt`）。
+> 完整文档和脚本仍在仓库里，动手前建议至少读一遍 [适配指南](docs/adaptation-guide.md)。
+>
+> **安装阶段请保持啰嗦模式**：这份 EFI 默认带 `-v debug=0x100`，卡住时能看到停在哪一步。
+> 装好系统、逐项验收完再跑 `scripts/03` 关掉；之后想排错用 `scripts/04` 一键开回来。
 
 ### 1. 生成你自己的 SMBIOS
 
@@ -153,7 +172,8 @@ bash scripts/01-fix-bluetooth.command             # 真正执行
 | --- | --- |
 | `01-fix-bluetooth.command` | 追加 `-ibtcompatbeta`，清零 `bluetoothInternalControllerInfo`，让 Intel 9560 蓝牙起得来 |
 | `02-fix-keyboard-autoconnect.command` | 注入 `BluetoothLocalHostAddress` + `AutoSeekKeyboard/PointingDevice`，开机自动连蓝牙键鼠，不用每次重配 |
-| `03-disable-verbose-boot.command` | 从 `boot-args` 移除 `-v` 与 `debug=0x100`，关闭开机代码滚动 |
+| `03-disable-verbose-boot.command` | 从 `boot-args` 移除 `-v` 与 `debug=0x100`，关闭开机代码滚动（**装好系统并验收后再跑**） |
+| `04-enable-verbose-boot.command` | 安装 / 排错阶段把这两个参数加回来，卡住时能看到日志 |
 
 ### 双击没反应？
 
@@ -191,10 +211,12 @@ open -a Terminal scripts/00-export-efi.command
 这份 EFI 目前只有**一台机器**的验证样本。你在自己机器上跑通了（或者卡在某一步），
 留一句反馈就能帮下一个人少踩一个坑：
 
+- **[填一份兼容性反馈](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/issues/new?template=compatibility-report.yml)**：
+  表单会引导你写机型、BIOS、硬盘和哪些硬件能用，结果汇总进 [机型 × 可用性表](docs/compatibility.md)；**失败案例同样有用**。
 - **[Discussions](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions)**：
-  报机型、BIOS 版本、换的什么盘、哪些硬件能用；**失败案例同样有用**。
+  提问、交流经验，或简单说一句「跑通了」。
 - **点个 Star**：让同机型搜索更容易找到这个仓库。
-- **[参与改进](CONTRIBUTING.md)**：反馈模板、还缺的信息（摄像头 / 电池状态 / 宏碁盘具体型号）、PR 约定。
+- **[参与改进](CONTRIBUTING.md)**：反馈模板、还缺的信息（摄像头 / 宏碁盘具体型号）、PR 约定。
 - **[适配指南](docs/adaptation-guide.md)**：哪些必须改、哪些能复用、常见故障速查。
 - **[English README](README.en.md)**：方便分享给不使用中文的人。
 

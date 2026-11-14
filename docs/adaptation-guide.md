@@ -4,7 +4,10 @@
 > 即使起来了也会有各种半残的硬件。本页按「必须改 / 可以复用 / 怎么验证 / 出问题查哪儿」组织，
 > 目标是让你少走弯路，而不是给一份万能配置。
 
+先查 [机型 × 可用性汇总表](compatibility.md)，看有没有人用过和你相近的配置；
 本仓库另有 [English README](../README.en.md)，方便分享给不使用中文的人。
+只想要 EFI 文件的话，[v1.0 Release](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/releases/latest)
+里有可直接解压的 `EFI-v1.0.zip`。
 
 ---
 
@@ -59,6 +62,7 @@ Intel Wireless-AC 9560 无线网卡，尤其是 HUAWEI MateBook D 15（2020）�
 
 1. 只填 SMBIOS，加 `-v` 引导，先确认能进安装器、能装完系统；
 2. 进系统后逐项验收：显卡加速 → 声卡 → Wi-Fi → 蓝牙 → 触控板 → 电池 → 睡眠唤醒；
+   **安装阶段别急着关 `-v`** —— 卡住时开机日志是唯一线索，全部验收完再跑 `scripts/03`；
 3. 哪一项不工作，先按第 4 节速查，再改对应 SSDT / kext，一次只动一处；
 4. 全部稳定后，用 `scripts/03` 去掉 `-v` / `debug=0x100`；
 5. 最后做 USB 端口定制，解决睡眠唤醒后的蓝牙掉线等问题。
@@ -87,5 +91,7 @@ Intel Wireless-AC 9560 无线网卡，尤其是 HUAWEI MateBook D 15（2020）�
 ## 5. 帮后面的人少踩一个坑
 
 如果你的机器成功跑起来了（或者卡在某一步），欢迎按 [CONTRIBUTING.md](../CONTRIBUTING.md)
-的模板报一下机型、BIOS 版本、换的什么盘、改了哪几处。哪怕只写一句「某某机型 + 这版 EFI 能进安装器」，
-对下一个人都有用。目前硬件表里摄像头、电池状态、宏碁盘的具体型号仍缺记录，也欢迎补充。
+的模板报一下机型、BIOS 版本、换的什么盘、改了哪几处 —— 也可以直接填
+[兼容性反馈表单](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/issues/new?template=compatibility-report.yml)，
+结果会汇总进 [兼容性表](compatibility.md)。哪怕只写一句「某某机型 + 这版 EFI 能进安装器」，
+对下一个人都有用。目前硬件表里摄像头、宏碁盘的具体型号仍缺记录，也欢迎补充（电池剩余电量已确认正常显示）。

@@ -12,7 +12,8 @@
 | Intel 9560 蓝牙 | ✅ 已修复 | `-ibtcompatbeta` + 清控制器缓存，见 §2 |
 | 蓝牙键盘开机自动回连 | ✅ 已修复 | 注入 `BluetoothLocalHostAddress` + `AutoSeek*`，见 §3 |
 | 板载触控板 | ✅ 可用 | `VoodooI2C` + `VoodooI2CHID` + `VoodooInput` 直接驱动，未做额外修补 |
-| 开机啰嗦模式 | ✅ 已关闭 | 见 §4 |
+| 电池剩余电量 | ✅ 可用 | `SSDT-BAT0-HUAWEI.aml` + `SMCBatteryManager.kext`，百分比正常显示 |
+| 开机啰嗦模式 | ✅ 安装期默认开启 | 便于排错；装好系统后用 `scripts/03` 关闭，见 §4 |
 | USB 端口定制 | ⚠️ 遗留问题 | 见 §5 |
 
 ---
@@ -108,21 +109,20 @@ Bluetooth Controller:
 
 ---
 
-## 4. 关闭开机啰嗦模式
+## 4. 啰嗦模式：安装期开，装完关
 
-调试期 `boot-args` 是：
+`-v` 让屏幕滚内核日志，`debug=0x100` 保留调试输出。这台机器调通之后曾把两者去掉，
+但**公开发布的 EFI 又把 `-v debug=0x100` 加回了默认值** —— 下载这份 EFI 的人大多正在装系统，
+黑屏或卡在某一行时没有日志几乎无法排错，对新手尤其不友好。
 
-```
--v alcid=21 darkwake=8 lilucpu=10 keepsyms=1 debug=0x100
-```
+| 阶段 | boot-args | 怎么做 |
+| --- | --- | --- |
+| 安装 / 排错 | `alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta -v debug=0x100` | 仓库默认值，开箱即有；若之前关过，跑 `scripts/04-enable-verbose-boot.command` |
+| 日常使用 | `alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta` | 跑 `scripts/03-disable-verbose-boot.command` |
 
-`-v` 让屏幕滚一堆内核日志，`debug=0x100` 保留调试输出。调通之后这两个都该去掉。
-
-`scripts/03-disable-verbose-boot.command` 只做减法，保留 `alcid / darkwake / lilucpu / keepsyms / -ibtcompatbeta`：
-
-```
-alcid=21 darkwake=8 lilucpu=10 keepsyms=1 -ibtcompatbeta
-```
+两个脚本都只增删这两个参数、保留其它 boot-args，支持 `--dry-run`，改动前自动把
+`config.plist` 备份到桌面 `efi-backup-*`。若卡在启动，把屏幕最后停留的那几行日志拍照或抄下来，
+比一句「进不去」有用得多。
 
 ---
 

@@ -1,5 +1,7 @@
 # HUAWEI MateBook D 15 (2020) Hackintosh · macOS 26 Tahoe · OpenCore EFI
 
+[English README](README.en.md) · [适配指南](docs/adaptation-guide.md) · [参与改进](CONTRIBUTING.md)
+
 > 一台 HUAWEI MateBook D 15（2020 款，Intel i5-10210U / Comet Lake-U）的黑苹果（Hackintosh）配置与踩坑记录。
 > macOS 26 Tahoe + OpenCore EFI，已在真机长期日常使用；含 SSDT、kext、脱敏后的 `config.plist` 与修复脚本。
 >
@@ -75,7 +77,10 @@
 │   └── 03-disable-verbose-boot.command
 ├── docs/
 │   ├── hardware.md         # 详细硬件与 BIOS 设置
+│   ├── adaptation-guide.md # 把 EFI 适配到你自己的机器 + 故障速查
 │   └── quirks-and-fixes.md # 踩坑记录：PM981 换盘 / 蓝牙 / 键盘 / 啰嗦模式 / USB
+├── README.en.md            # 英文版 README
+├── CONTRIBUTING.md         # 反馈模板、缺失信息清单与贡献约定
 ├── PUBLISH.md              # 发布到 GitHub 的操作指引
 └── LICENSE
 ```
@@ -178,6 +183,23 @@ open -a Terminal scripts/00-export-efi.command
   升级系统前请确认有对应版本，否则 Wi-Fi 可能失效。
 - **触控板手势未逐项验证**：指针与点击已确认可用，多指手势等行为请以你的实际机型为准。
 - **SMBIOS 为仿冒值**：`MacBookPro16,1` 与本机实际硬件不符，`关于本机` 显示信息仅供参考。
+
+---
+
+## 让这份配置帮到更多人
+
+这份 EFI 目前只有**一台机器**的验证样本。你在自己机器上跑通了（或者卡在某一步），
+留一句反馈就能帮下一个人少踩一个坑：
+
+- **[Discussions](https://github.com/1769588795/huawei-matebook-d15-hackintosh-tahoe-efi/discussions)**：
+  报机型、BIOS 版本、换的什么盘、哪些硬件能用；**失败案例同样有用**。
+- **点个 Star**：让同机型搜索更容易找到这个仓库。
+- **[参与改进](CONTRIBUTING.md)**：反馈模板、还缺的信息（摄像头 / 电池状态 / 宏碁盘具体型号）、PR 约定。
+- **[适配指南](docs/adaptation-guide.md)**：哪些必须改、哪些能复用、常见故障速查。
+- **[English README](README.en.md)**：方便分享给不使用中文的人。
+
+> 提交配置、贴日志或截图前，请确认里面没有真实序列号 / `MLB` / `SystemUUID` / `ROM` / 蓝牙 MAC，
+> 也别带上 `config.plist.old*` 备份。这类值一旦进了公开仓库，Git 历史无法真正抹除。
 
 ---
 
